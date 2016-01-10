@@ -46,7 +46,7 @@ Sunlight::Congress.api_key = "e179a6973728c4dd3fb1204283aaccb5"
       end
       puts "#{phone}"
     end
-   end
+
 
   def peak_hours
     contents = CSV.open '/Users/marinacorona/Turing/Module1/event_manager/lib/event_attendees.csv', headers: true, header_converters: :symbol
@@ -80,10 +80,6 @@ Sunlight::Congress.api_key = "e179a6973728c4dd3fb1204283aaccb5"
   contents.each do |row|
     id = row[0]
     name = row[:first_name]
-    zipcode = clean_zipcode(row[:zipcode])
-    legislators = legislators_by_zipcode(zipcode)
+    puts row[:homephone]
 
-    form_letter = erb_template.result(binding)
-
-    save_thank_you_letters(id,form_letter)
   end
