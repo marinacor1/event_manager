@@ -1,12 +1,23 @@
 require 'csv'
 require 'sunlight/congress'
 require 'erb'
-puts "EventManager initialized."
-contents = CSV.open '/Users/marinacorona/Turing/Module1/event_manager/lib/event_attendees.csv', headers: true, header_converters: :symbol
+
 Sunlight::Congress.api_key = "e179a6973728c4dd3fb1204283aaccb5"
 
   def clean_zipcode(zipcode)
-    zipcode.to_s.rjust(5,"0")[0..4]
+    contents = CSV.open '/Users/marinacorona/Turing/Module1/event_manager/lib/event_attendees.csv', headers: true, header_converters: :symbol
+    contents.each do |row|
+      name = row[:first_name]
+      zipcode = row[:zipcode]
+      if zipcode.nil?
+        zipcode = "00000"
+      elsif zipcode.length < 5
+        zipcode = zipcode.rjust 5, "0"
+      elsif zipcode.length > 5
+        zipcode = zipcode[0..4]
+      end
+    puts "#{name} #{zipcode}"
+    end
   end
 
   def clean_phone_number
@@ -41,13 +52,20 @@ Sunlight::Congress.api_key = "e179a6973728c4dd3fb1204283aaccb5"
 
   def save_thank_you_letters(id,form_letter)
     Dir.mkdir("output") unless Dir.exists? "output"
+
     filename = "output/thanks_#{id}.html"
+
     File.open(filename,'w') do |file|
       file.puts form_letter
     end
   end
+
+  puts "EventManager initialized."
+
+
   template_letter = File.read "/Users/marinacorona/Turing/Module1/event_manager/form_letter.erb"
   erb_template = ERB.new template_letter
+  contents = CSV.open '/Users/marinacorona/Turing/Module1/event_manager/lib/event_attendees.csv', headers: true, header_converters: :symbol
 
   contents.each do |row|
     id = row[0]
