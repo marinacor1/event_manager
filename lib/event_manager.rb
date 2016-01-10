@@ -21,31 +21,49 @@ Sunlight::Congress.api_key = "e179a6973728c4dd3fb1204283aaccb5"
   end
 
   def clean_phone_number
-    contents = CSV.open "event_attendees.csv", headers: true, header_converters: :symbol
+    lines = File.readlines "/Users/marinacorona/Turing/Module1/event_manager/lib/event_attendees.csv"
+    lines.each_with_index do |line,index|
+      next if index == 0
+      columns = line.split(",")
+      name = columns[2]
+      puts name
+end
+
+    # contents = CSV.open '/Users/marinacorona/Turing/Module1/event_manager/lib/event_attendees.csv', headers: true, header_converters: :symbol
+    #   contents.each do |row|
+    #     phone = row[:homephone]
+    #     puts "#{phone}"
+    #   end
+  #     if phone.include?("()")
+  #       phone = phone.delete("()")
+  #     end
+  #     if phone.include?("-")
+  #       phone = phone.delete("-")
+  #     end
+  #     if phone.length == 11
+  #       if phone[0] == 1
+  #         phone = phone.to_a.shift
+  #         phone = phone.to_s
+  #       else
+  #         phone = "bad number"
+  #       end
+  #     elsif phone.length == 10
+  #        phone = phone
+  #     else
+  #       phone = "bad number"
+  #     end
+  #     puts "#{phone}"
+  #   end
+   end
+
+  def peak_hours
+    contents = CSV.open '/Users/marinacorona/Turing/Module1/event_manager/lib/event_attendees.csv', headers: true, header_converters: :symbol
     contents.each do |row|
-      phone = row[:homephone]
-      if phone.length < 10
-        phone = "bad_number"
-      elsif phone.length == 11
-        if phone[0] == 1
-          phone = phone.to_a.shift
-          phone = phone.to_s
-          puts phone
-        else
-          phone = "bad number"
-        end
-      else
-        puts phone
-      end
+      time = row[:regdate]
+    puts time
     end
   end
-    # def peak_hours
-    #    contents = CSV.open "event_attendees.csv", headers: true, header_converters: :symbol
-    #   contents.each do |row|
-    #     time = row[:RegDate]
-    #   puts time
-    #   end
-    # end
+
   def legislators_by_zipcode(zipcode)
     Sunlight::Congress::Legislator.by_zipcode(zipcode)
   end
