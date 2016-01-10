@@ -25,6 +25,7 @@ def clean_phone_number
     else
       puts phone
   end
+  
 # def clean_phone_number(homephone)
 #   homephone.to_s.rjust(10,"0")[0..9]
 #
