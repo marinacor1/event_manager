@@ -1,6 +1,8 @@
 require 'csv'
 require 'sunlight/congress'
 require 'erb'
+require 'pry'
+requie 'date'
 
 Sunlight::Congress.api_key = "e179a6973728c4dd3fb1204283aaccb5"
 
@@ -24,14 +26,11 @@ Sunlight::Congress.api_key = "e179a6973728c4dd3fb1204283aaccb5"
     contents = CSV.open '/Users/marinacorona/Turing/Module1/event_manager/lib/event_attendees.csv', headers: true, header_converters: :symbol
       contents.each do |row|
         phone = row[:homephone]
-        puts "#{phone}"
       end
       if phone.include?("()")
         phone = phone.delete("()")
       end
-      if phone.include?("-")
-        phone = phone.delete("-")
-      end
+
       if phone.length == 11
         if phone[0] == 1
           phone = phone.to_a.shift
@@ -46,7 +45,6 @@ Sunlight::Congress.api_key = "e179a6973728c4dd3fb1204283aaccb5"
       end
       puts "#{phone}"
     end
-
 
   def peak_hours
     contents = CSV.open '/Users/marinacorona/Turing/Module1/event_manager/lib/event_attendees.csv', headers: true, header_converters: :symbol
@@ -72,14 +70,31 @@ Sunlight::Congress.api_key = "e179a6973728c4dd3fb1204283aaccb5"
 
   puts "EventManager initialized."
 
-
   template_letter = File.read "/Users/marinacorona/Turing/Module1/event_manager/form_letter.erb"
   erb_template = ERB.new template_letter
   contents = CSV.open '/Users/marinacorona/Turing/Module1/event_manager/lib/event_attendees.csv', headers: true, header_converters: :symbol
 
+  morning_counter = 0
+  afternoon_counter = 0
+  night_counter = 0
   contents.each do |row|
     id = row[0]
     name = row[:first_name]
-    puts row[:homephone]
-
+    puts name
+    phone = row[:homephone]
+    phone = phone.gsub(/\D/, '')
+    puts phone
+    date_time = row[1]
+    time = date_time.split(" ")[1]
+    hour = time.split(":")[0].to_i
+      if hour < 12
+        morning_counter +=1
+      elsif hour > 18
+        night_counter +=1
+      else
+        afternoon_counter +=1
+      end
+      puts "Morning counter = #{morning_counter}"
+      puts "Afternoon counter = #{afternoon_counter}"
+      puts "Night counter = #{night_counter}"
   end
